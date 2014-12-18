@@ -25,6 +25,7 @@ class Knight < SteppingPiece
 
   def initialize(pos, board, color)
     super
+    @symbol = self.color == :black ? :♞ : :♘
   end
 
   def self.move_directions
@@ -45,6 +46,7 @@ class King < SteppingPiece
 
   def initialize(pos, board, color)
     super
+    @symbol = self.color == :black ? :♚ : :♔
   end
 
   def self.move_directions
