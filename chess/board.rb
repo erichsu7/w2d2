@@ -1,15 +1,21 @@
-require "colorize"
+require 'colorize'
+require_relative 'pieces'
 
 class Board
 
-  attr_reader :rows
+  attr_reader :rows, :current_turn
   attr_accessor :cursor_pos
 
   def initialize(populate = true)
     @rows = Array.new(8) { Array.new(8) }
     @cursor_pos = [7, 0]
+    @current_turn = :white
 
     populate_board if populate
+  end
+
+  def toggle_turn
+    @current_turn = @current_turn == :white ? :black : :white
   end
 
   def [](pos)
@@ -36,7 +42,7 @@ class Board
       [0, 4] => King.new([0, 4], self, :black),
       [0, 5] => Bishop.new([0, 5], self, :black),
       [0, 6] => Knight.new([0, 6], self, :black),
-      [0, 7] => Rook.new([0, 8], self, :black),
+      [0, 7] => Rook.new([0, 7], self, :black),
       [1, 0] => Pawn.new([1, 0], self, :black),
       [1, 1] => Pawn.new([1, 1], self, :black),
       [1, 2] => Pawn.new([1, 2], self, :black),
@@ -56,7 +62,7 @@ class Board
       [7, 4] => King.new([7, 4], self, :white),
       [7, 5] => Bishop.new([7, 5], self, :white),
       [7, 6] => Knight.new([7, 6], self, :white),
-      [7, 7] => Rook.new([7, 8], self, :white),
+      [7, 7] => Rook.new([7, 7], self, :white),
       [6, 0] => Pawn.new([6, 0], self, :white),
       [6, 1] => Pawn.new([6, 1], self, :white),
       [6, 2] => Pawn.new([6, 2], self, :white),
@@ -111,9 +117,10 @@ class Board
 
   def move!(start_pos, end_pos)
     piece = self[start_pos]
-    dup_piece = piece.class.new(piece.pos, self, piece.color)
-    self[end_pos] = dup_piece
+
+    self[end_pos] = piece
     self[start_pos] = nil
+    piece.pos = end_pos
 
     true
   end
@@ -161,6 +168,13 @@ class Board
     puts column_labels
   end
 
+  def render_interface(prompt = "" , error_prompt = "")
+    system('clear')
+    render
+    puts error_prompt
+    puts "#{current_turn} turn"
+    puts prompt
+  end
 
   def print_element(element, colorize = false)
     if element.is_a?(Piece)

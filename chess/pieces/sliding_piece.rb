@@ -1,8 +1,7 @@
-require_relative "pieces.rb"
+require_relative 'piece'
 
 class SlidingPiece < Piece
 
-  attr_accessor :diagonals, :orthogonals
 
   def initialize(pos, board, color)
     super
@@ -10,6 +9,7 @@ class SlidingPiece < Piece
 
   def moves
     moves = []
+
     self.class.move_directions.each do |direction|
       moves += explore_direction(direction)
     end
@@ -25,8 +25,8 @@ class SlidingPiece < Piece
 
     until stop_search
       offset = [d_row * scalar, d_col * scalar]
-
       new_pos = pos[0] + offset[0], pos[1] + offset[1]
+
       if Board.on_board?(new_pos)
         moves_in_direction << new_pos if (board[new_pos].nil? || board[new_pos].color != self.color)
 
@@ -41,45 +41,6 @@ class SlidingPiece < Piece
     end
 
     moves_in_direction
-  end
-
-end
-
-class Queen < SlidingPiece
-
-  def initialize(pos, board, color)
-    super
-    @symbol = self.color == :black ? :♛ : :♕
-  end
-
-  def self.move_directions
-    ORTHOGONALS + DIAGONALS
-  end
-
-end
-
-class Rook < SlidingPiece
-
-  def initialize(pos, board, color)
-    super
-    @symbol = self.color == :black ? :♜ : :♖
-  end
-
-  def self.move_directions
-    ORTHOGONALS
-  end
-
-end
-
-class Bishop < SlidingPiece
-
-  def initialize(pos, board, color)
-    super
-    @symbol = self.color == :black ? :♝ : :♗
-  end
-
-  def self.move_directions
-    DIAGONALS
   end
 
 end

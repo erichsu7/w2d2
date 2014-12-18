@@ -1,7 +1,4 @@
-require_relative 'pieces'
 require_relative 'board'
-require_relative "stepping_piece"
-require_relative "sliding_piece"
 require_relative 'player'
 require 'colorize'
 
@@ -12,7 +9,7 @@ attr_reader :board, :player1, :player2
   def initialize
     @board = Board.new
     @player1 = HumanPlayer.new(:white)
-    @player2 = HumanPlayer.new(:black)
+    @player2 = ComputerPlayer.new(:black)
   end
 
   def play
@@ -29,7 +26,7 @@ attr_reader :board, :player1, :player2
   end
 
   def turn(player)
-    puts "#{player.color} move: "
+    @board.toggle_turn
     player.play_turn(@board)
   end
 
